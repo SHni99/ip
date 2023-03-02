@@ -1,9 +1,12 @@
 package duke.tasks;
 
+import duke.exceptions.TaskException;
+import duke.ui.Ui;
 /**
- * Stores inputs of to-do tasks
+ * Represents a task to be done
  */
 public class Todo extends Task {
+
     /**
      * Initialises to-do class
      *
@@ -14,9 +17,19 @@ public class Todo extends Task {
     }
 
     /**
-     * Displays name, date and time of the to-do task
-     *
-     * @return shows the to-do item
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateTask(String input) throws TaskException {
+        if (input.length() <= 5) {
+            Ui.error("todo");
+        }
+        System.out.println("You are now updating item in To-do task");
+        super.updateTask(input);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public String toString() {

@@ -1,11 +1,13 @@
 package duke.tasks;
 
+import duke.exceptions.TaskException;
+
 /**
- * Stores inputs of tasks
+ * Represents task types
  */
 public class Task {
-    private final String name;
-    private boolean checkMark;
+    private String name;
+    private boolean isMarked;
 
     /**
      * Initialises input to the class
@@ -14,21 +16,29 @@ public class Task {
      */
     public Task(String name) {
         this.name = name;
-        this.checkMark = false;
+        this.isMarked = false;
     }
 
     /**
      * Sets checkMark as true
      */
     public void toBeMarked() {
-        this.checkMark = true;
+        this.isMarked = true;
     }
 
     /**
      * Sets checkMark as false
      */
     public void toBeUnmarked() {
-        this.checkMark = false;
+        this.isMarked = false;
+    }
+
+    /**
+     * Updates name of the item
+     */
+    public void updateTask(String input) throws TaskException {
+        System.out.println("Enter the item name: ");
+        this.name = input;
     }
 
     /**
@@ -38,6 +48,7 @@ public class Task {
      */
     @Override
     public String toString() {
-        return (checkMark ? "[X] " : "[] ") + name;
+        return (isMarked ? "[X] " : "[] ") + name;
     }
+
 }

@@ -1,9 +1,9 @@
 package duke.command;
 
-import duke.tasklist.TaskList;
-import duke.storage.Storage;
-import duke.ui.Ui;
 import duke.exceptions.TaskException;
+import duke.storage.Storage;
+import duke.tasklist.TaskList;
+import duke.ui.Ui;
 
 /**
  * Gives command to execute default action
@@ -11,9 +11,7 @@ import duke.exceptions.TaskException;
 public class DefaultCommand extends Command {
 
     /**
-     * Exits duke if it detects bye command
-     *
-     * @return boolean false
+     * {@inheritDoc}
      */
     @Override
     public boolean isExit() {
@@ -21,15 +19,11 @@ public class DefaultCommand extends Command {
     }
 
     /**
-     * Executes default actions
-     *
-     * @param taskList arraylist that stores tasks
-     * @param storage  stores data of tasks
-     * @param ui       responds to user input
-     * @throws TaskException displays error messages
+     * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList taskList, Storage storage, Ui ui) throws TaskException {
+    public String execute(TaskList taskList, Storage storage, Ui ui) throws TaskException {
         ui.error("default");
+        return "Try again";
     }
 }

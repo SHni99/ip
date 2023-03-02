@@ -1,15 +1,14 @@
 package duke.command;
 
-import duke.exceptions.TaskException;
-import duke.tasklist.TaskList;
 import duke.storage.Storage;
+import duke.tasklist.TaskList;
 import duke.ui.Ui;
 
 /**
  * Gives command to mark item as complete
  */
 public class MarkCommand extends Command {
-    private int index;
+    private final int index;
 
     /**
      * Initialises mark class
@@ -21,9 +20,7 @@ public class MarkCommand extends Command {
     }
 
     /**
-     * Exits duke if it detects bye command
-     *
-     * @return boolean false
+     * {@inheritDoc}
      */
     @Override
     public boolean isExit() {
@@ -31,15 +28,10 @@ public class MarkCommand extends Command {
     }
 
     /**
-     * Marks task items
-     *
-     * @param taskList arraylist that stores tasks
-     * @param storage  stores data of tasks
-     * @param ui       responds to user input
-     * @throws TaskException displays error messages
+     * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList taskList, Storage storage, Ui ui) {
-        taskList.markItem(index);
+    public String execute(TaskList taskList, Storage storage, Ui ui) {
+        return taskList.markItem(index);
     }
 }

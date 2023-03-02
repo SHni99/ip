@@ -2,13 +2,17 @@ package duke.tasks;
 
 import java.time.LocalDate;
 
+import duke.exceptions.TaskException;
+import duke.ui.Ui;
+
 /**
- * Stores inputs of deadline tasks
+ * Represents a Deadline Task to be done with a deadline
  */
 public class Deadline extends Task {
-    private final LocalDate date;
-    private final String time;
-    private final String[] period;
+    private LocalDate date;
+    private String time;
+    private String[] period;
+
 
     /**
      * Acts as constructor for deadline class
@@ -19,18 +23,28 @@ public class Deadline extends Task {
     public Deadline(String name, String frame) {
         super(name);
         this.period = frame.split(" ");
-        if (period[0].contains("/")) {
-            this.date = LocalDate.parse(period[0].replaceAll("/", "-"));
-        } else {
-            this.date = LocalDate.parse(period[0]);
-        }
+        this.date = LocalDate.parse(period[0]);
         this.time = period[1];
     }
 
     /**
-     * Displays name, date and time of the deadline task
-     *
-     * @return shows the deadline item
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateTask(String input) throws TaskException {
+        if (!input.contains("-by")) {
+            Ui.error("deadline");
+        }
+        String[] inputPart = input.split("-by ");
+        this.period = inputPart[1].split(" ");
+        System.out.println("You are now updating item in Deadline task");
+        super.updateTask(inputPart[0]);
+        this.date = LocalDate.parse(period[0]);
+        this.time = period[1];
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public String toString() {

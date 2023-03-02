@@ -1,11 +1,13 @@
 package duke;
 
+import duke.command.Command;
+import duke.command.DefaultCommand;
 import duke.exceptions.TaskException;
+import duke.parser.Parser;
 import duke.storage.Storage;
 import duke.tasklist.TaskList;
 import duke.ui.Ui;
-import duke.parser.Parser;
-import duke.command.*;
+
 
 /**
  * Acts as the main class for execution of user inputs.
@@ -15,6 +17,9 @@ public class Duke {
     private TaskList tasks;
     private Parser parser;
     private Ui ui;
+    private boolean isExitInput;
+
+    private boolean isInvalidInput;
 
     /**
      * Initialises classes need to read and write the program.
@@ -24,49 +29,59 @@ public class Duke {
     public Duke(String filePath) {
         this.ui = new Ui();
         this.storage = new Storage(filePath, this.ui);
-        this.tasks = new TaskList(this.storage, this.ui);
+        this.tasks = new TaskList(this.storage);
         this.parser = new Parser();
+        this.isExitInput = false;
+        this.isInvalidInput = false;
     }
 
     /**
-     * Represents main class of duke
+     * Allows users to add, mark and un-mark, delete, add task (to-do, deadline, event)
+     * or shows items in a list and will exit if the bye command is returned
      *
-     * @param args
+     * @param input instruction from the user
+     * @return task description as result
      */
-    public static void main(String[] args) {
-        new Duke("./data/duke.txt").userInputs();
+    public String initialise(String input) {
+        Ui.welcomeMessage();
+        this.storage.loadFileData();
+
+        try {
+            Command c = this.parser.parse(input.replaceAll("/", "-"));
+            assert c != null : "not a command";
+            if (c instanceof DefaultCommand) {
+                this.isInvalidInput = true;
+            } else {
+                this.isInvalidInput = false;
+            }
+            this.isExitInput = c.isExit();
+            this.storage.writeToFile();
+            return c.execute(tasks, storage, ui);
+
+        } catch (TaskException e) {
+            return e.getMessage();
+        } catch (IndexOutOfBoundsException e) {
+            return "Nothing to mark or unmark or delete or update!";
+        }
+
     }
 
     /**
-     * Allow users to add, mark and un-mark, delete, add task (to-do, deadline, event)
-     * or show items in a list and will exit if the bye command is returned
+     * Closes app upon receiving 'true'
+     *
+     * @return boolean of exitStatus
      */
-    public void userInputs() {
-
-        this.ui.welcomeMessage();
-        this.storage.loadFileData();
-        boolean isExit = false;
-
-        while (!isExit) {
-            try {
-                String input = ui.readCommand();
-                ui.showLine();
-                Command c = this.parser.parse(input);
-                c.execute(tasks, storage, ui);
-                isExit = c.isExit();
-                this.storage.writeToFile();
-
-            } catch (TaskException e) {
-                System.out.println(e.getMessage());
-            } catch (NullPointerException e) {
-                System.out.println("Object pointing to null, please check code");
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("Check if the index is within the size of the array");
-            } catch (IndexOutOfBoundsException e) {
-                System.out.println("Nothing to mark/unmark!");
-            } finally {
-                ui.showLine();
-            }
-        }
+    public boolean isExitApp() {
+        return this.isExitInput;
     }
+
+    /**
+     * Validates if the instruction been sent is an actual command
+     *
+     * @return true if the instruction is a class of default command
+     */
+    public boolean isNotAnInstruction() {
+        return this.isInvalidInput;
+    }
+
 }

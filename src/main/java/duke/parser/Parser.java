@@ -1,9 +1,19 @@
 package duke.parser;
 
-import duke.command.*;
+import java.util.Arrays;
+
+import duke.command.AddCommand;
+import duke.command.ByeCommand;
+import duke.command.Command;
+import duke.command.DefaultCommand;
+import duke.command.DeleteCommand;
+import duke.command.FindCommand;
+import duke.command.ListCommand;
+import duke.command.MarkCommand;
+import duke.command.UnmarkCommand;
+import duke.command.UpdateCommand;
 import duke.exceptions.TaskException;
 
-import java.util.Arrays;
 
 /**
  * Identifies command and executes its class respectively
@@ -14,10 +24,12 @@ public class Parser {
      * Contains instructions to be entered by user to control system
      */
     public enum Instructions {
-        BYE, LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE
+        BYE, LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, UPDATE
     }
 
     /**
+     * Identifies command based on the input given by the user and executes it
+     *
      * @param input user command is passed in as String
      * @return command class of type Command
      * @throws TaskException returns an exception under TaskException class
@@ -27,49 +39,47 @@ public class Parser {
         int index = 0;
         String first_word = part[0].toUpperCase();
 
-        if (part[0].equals("mark") || part[0].equals("unmark") || part[0].equals("delete")) {
+        if (part[0].equals("mark") || part[0].equals("unmark")
+                || part[0].equals("delete") || part[0].equals("update")) {
             index = Integer.parseInt(part[1]) - 1;
         }
 
-        if (!Arrays.stream(Instructions.values()).anyMatch(x -> (x.toString()).equals(first_word))) {
+        if (!Arrays.stream(Instructions.values()).anyMatch(x -> x.toString().equals(first_word))) {
             return new DefaultCommand();
         }
 
         Instructions instruction = Instructions.valueOf(first_word);
 
         switch (instruction) {
-            // Exit the system upon entering
-            case BYE:
-                return new ByeCommand();
+        case BYE:
+            return new ByeCommand();
 
-            // Display a list of tasks that shows its completion and types
-            case LIST:
-                return new ListCommand();
+        case LIST:
+            return new ListCommand();
 
-            // Mark to complete the task, the second bracket will show a cross
-            case MARK:
-                return new MarkCommand(index);
+        case MARK:
+            return new MarkCommand(index);
 
-            // Un-mark to redo the completion of the task, the cross will be
-            // removed from the second bracket
-            case UNMARK:
-                return new UnmarkCommand(index);
+        case UNMARK:
+            return new UnmarkCommand(index);
 
-            // Add task of type (To do/ deadline/ event)
-            case TODO:
-            case DEADLINE:
-            case EVENT: {
-                return new AddCommand(instruction.toString(), input);
-            }
+        case TODO:
+        case DEADLINE:
+        case EVENT: {
+            return new AddCommand(instruction.toString(), input);
+        }
 
-            // Delete task from the list according to its numbering on the list
-            case DELETE:
-                return new DeleteCommand(index);
+        case DELETE:
+            return new DeleteCommand(index);
 
-            // default will throw an exception in case switch-case is unable to find
-            // instruction
-            default:
-                return new DefaultCommand();
+        case FIND:
+            return new FindCommand(part[1]);
+
+        case UPDATE:
+            return new UpdateCommand(index, input);
+
+        default:
+            return new DefaultCommand();
         }
     }
 }

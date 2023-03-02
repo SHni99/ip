@@ -5,18 +5,13 @@ import duke.tasklist.TaskList;
 import duke.ui.Ui;
 
 /**
- * Gives command to delete item
+ * Gives command to find items in the list
  */
-public class DeleteCommand extends Command {
-    private final int index;
+public class FindCommand extends Command {
+    private final String input;
 
-    /**
-     * Initialises delete class
-     *
-     * @param index task sequences in task list
-     */
-    public DeleteCommand(int index) {
-        this.index = index;
+    public FindCommand(String input) {
+        this.input = input;
     }
 
     /**
@@ -32,6 +27,6 @@ public class DeleteCommand extends Command {
      */
     @Override
     public String execute(TaskList taskList, Storage storage, Ui ui) {
-        return taskList.deleteTask(index);
+        return taskList.findItem(input);
     }
 }

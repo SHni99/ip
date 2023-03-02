@@ -1,16 +1,14 @@
 package duke.command;
 
-import duke.exceptions.TaskException;
-import duke.tasklist.TaskList;
 import duke.storage.Storage;
+import duke.tasklist.TaskList;
 import duke.ui.Ui;
 
 /**
  * Gives command to unmark item as incomplete
  */
 public class UnmarkCommand extends Command {
-    private int index;
-    private boolean exit;
+    private final int index;
 
     /**
      * Initialises unmark class
@@ -19,27 +17,22 @@ public class UnmarkCommand extends Command {
      */
     public UnmarkCommand(int index) {
         this.index = index;
-        this.exit = false;
     }
 
     /**
-     * Exits duke if it detects bye command
-     *
-     * @return boolean false
+     * {@inheritDoc}
      */
     @Override
     public boolean isExit() {
-        return exit;
+        return false;
     }
 
     /**
-     * Unmarks task items
-     * @param taskList arraylist that stores tasks
-     * @param storage  stores data of tasks
-     * @param ui       responds to user input
+     * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList taskList, Storage storage, Ui ui) {
-        taskList.unmarkItem(index);
+    public String execute(TaskList taskList, Storage storage, Ui ui) {
+
+        return taskList.unmarkItem(index);
     }
 }
